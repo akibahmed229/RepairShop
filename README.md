@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# **Project Documentation**
 
-## Getting Started
+## **Technologies Used**
 
-First, run the development server:
+- **Next.js** (v13) – The React Framework for the Web with SSR support
+- **React** (v19) – A JavaScript library for building user interfaces
+- **Tailwind CSS** – Utility-first CSS framework
+- **Shadcn/UI** – Component library
+- **Sentry** – Application monitoring and error tracking
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## **1. Next.js Features Used in the Project**
+
+Next.js provides server-side rendering (SSR) and other features that enhance React's capabilities.
+
+### **1.1 Routing**
+
+Next.js supports file-based routing in the `app/` directory. Below are some of the routing features used in this project:
+
+#### **1.1.1 Pages, Layouts, and Templates**
+
+- **Page**: A file inside the `app/` directory that represents UI for a specific route. Export a default React component to define a page.
+- **Layout**: A shared UI between multiple pages. Layouts preserve state, remain interactive, and do not re-render on navigation. Export a React component from a `layout.tsx` file that accepts a `children` prop.
+- **Template**: Similar to layouts but re-renders every time a new page is loaded.
+
+#### **1.1.2 Route Groups**
+
+- **Route Groups** allow logical grouping of routes without affecting the URL path structure.
+- This is achieved by wrapping directories in parentheses (`()`).
+
+Example directory structure:
+
+```
+app
+├── (rs)
+│   ├── customers/
+│   ├── home/
+│   ├── tickets/
+│   ├── layout.tsx
+│   ├── template.tsx
+│   ├── error.tsx
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+In this example, `(rs)` is a **Route Group**, which organizes routes without affecting their URLs.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## **2. Tailwind CSS**
 
-## Learn More
+Tailwind is customized in the `tailwind.config.ts` file. Below are some themes and configurations used:
 
-To learn more about Next.js, take a look at the following resources:
+- **Custom Themes**:
+  - **Background Image**:
+    - Theme name: `home-img`, accessed with `bg-home-img`.
+    - Used in: `app/page.tsx`.
+  - **Animations**:
+    - **Keyframes**: Custom keyframes for `appear` and `slide`.
+    - **Themes**: `animate-appear`, `animate-slide`.
+      - Used in: `components/Header.tsx`, `app/(rs)/template.tsx`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## **3. Shadcn/UI**
 
-## Deploy on Vercel
+Shadcn is used for reusable UI components. Below are the components implemented in the project:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### **3.1 Components Used**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Dark Mode Toggle**:
+
+   - Created in `components/theme-provider.tsx`.
+   - Integrated with `ThemeProvider` in the root layout (`app/layout.tsx`).
+   - Dark mode toggle added in `components/ModeToggle.jsx` and used in `components/Header.tsx`.
+
+2. **Button**:
+
+   - Created in `components/ui/button.tsx`.
+   - Used in `components/Header.tsx`, `app/note-found.tsx`.
+
+3. **Dropdown Menu**:
+
+   - Created in the same directory as Button.
+   - Used in `components/ModeToggle.tsx`.
+
+### **3.2 Adding Components**
+
+Install a Shadcn component using the following command:
+
+```bash
+npx shadcn@latest add component
+```
+
+---
+
+## **4. Sentry**
+
+Sentry provides application monitoring and error tracking.
+
+### **4.1 Integration**
+
+The following command was used for integrating Sentry with this project:
+
+```bash
+npx @sentry/wizard@latest -i nextjs --saas --org general-xng --project javascript-nextjs
+```
+
+### **4.2 Benefits**
+
+- Automatic setup and configuration for monitoring errors and performance issues.
+- Traces slow transactions to poorly performing API calls or database queries.
