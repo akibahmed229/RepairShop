@@ -2,11 +2,12 @@
 
 ## **Technologies Used**
 
-- **Next.js** (v13) – The React Framework for the Web with SSR support
 - **React** (v19) – A JavaScript library for building user interfaces
+- **Next.js** (v15) – The React Framework for the Web with SSR support
 - **Tailwind CSS** – Utility-first CSS framework
 - **Shadcn/UI** – Component library
 - **Sentry** – Application monitoring and error tracking
+- **Kinde** – Authentication and authorization service
 
 ---
 
@@ -109,3 +110,57 @@ npx @sentry/wizard@latest -i nextjs --saas --org general-xng --project javascrip
 
 - Automatic setup and configuration for monitoring errors and performance issues.
 - Traces slow transactions to poorly performing API calls or database queries.
+
+---
+
+## **5. Kinde**
+
+Kinde is used for authentication and authorization. Below are the steps and configurations implemented in the project:
+
+### **5.1 Setting Up Kinde**
+
+1. Install the Kinde authentication package:
+
+   ```bash
+   npm i @kinde-oss/kinde-auth-nextjs
+   ```
+
+2. Configure environment variables in `.env.local`:
+   ```bash
+   KINDE_CLIENT_ID=your_id
+   KINDE_CLIENT_SECRET=your_secret
+   KINDE_ISSUER_URL=https://repaircompter.kinde.com
+   KINDE_SITE_URL=http://localhost:3000
+   KINDE_POST_LOGOUT_REDIRECT_URL=http://localhost:3000/login
+   KINDE_POST_LOGIN_REDIRECT_URL=http://localhost:3000/home
+   ```
+   Update the **login redirection URL** on the Kinde website accordingly.
+
+### **5.2 Authorization Permissions**
+
+Three permissions were created in the Kinde website for later use:
+
+- **Admin**
+- **Manager**
+- **User**
+
+### **5.3 API Route for Authentication**
+
+Create the `app/api/auth/[kindeAuth]/route.js` file to handle authentication. Add the following code:
+
+```javascript
+import { handleAuth } from "@kinde-oss/kinde-auth-nextjs/server";
+export const GET = handleAuth();
+```
+
+### **5.4 Login Page**
+
+Create a login page at `app/login/page.tsx` for user sign-in.
+
+### **5.5 Logout Feature**
+
+Logout functionality was added to `components/Header.tsx`.
+
+### **5.6 Middleware for Route Protection**
+
+To protect routes, create a `middleware.ts` file at the root of the project. This middleware ensures that only authenticated users can access certain pages.
