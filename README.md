@@ -8,6 +8,8 @@
 - **Shadcn/UI** – Component library
 - **Sentry** – Application monitoring and error tracking
 - **Kinde** – Authentication and authorization service
+- **Neon** - Ship faster with Postgres
+- **Drizzle** - ORM for your database
 
 ---
 
@@ -171,3 +173,87 @@ Logout functionality was added to `components/Header.tsx`.
 ### **5.6 Middleware for Route Protection**
 
 To protect routes, create a `middleware.ts` file at the root of the project. This middleware ensures that only authenticated users can access certain pages.
+
+---
+
+## **6. Drizzle and Neon**
+
+### **6.1 Setup Environment Variables**
+
+- Update `.env.local` with your PostgreSQL connection string provided by Neon:
+
+```env
+# Example connection string
+DATABASE_URL=postgresql://username:password@hostname:5432/database?sslmode=require
+```
+
+### **6.2 Install Dependencies**
+
+Run the following commands to install Drizzle ORM and Neon-related packages:
+
+```bash
+npm i drizzle-orm @neondatabase/serverless dotenv
+npm i -D drizzle-kit tsx
+```
+
+### **6.3 Create Database Directory**
+
+Set up the `db` directory in the project root to organize database-related files:
+
+```
+db
+├── index.ts        # Contains database connection logic.
+├── migrate.ts      # Handles database migrations.
+└── schema.ts       # Defines database tables and relationships.
+```
+
+### **6.4 Configure Drizzle**
+
+1. **Create `drizzle.config.ts` in the root directory**:
+
+   ```ts
+   import { defineConfig } from "drizzle-kit";
+
+   export default defineConfig({
+     schema: "./db/schema.ts",
+     out: "./db/migrations",
+     dialect: "postgresql",
+     dbCredentials: {
+       url: process.env.DATABASE_URL!,
+     },
+   });
+   ```
+
+2. **File Descriptions**:
+
+   - `index.ts`: Establishes and exports the database connection using Drizzle and Neon.
+   - `schema.ts`: Defines the database schema with two tables:
+     - **Customers**: Represents customer information.
+     - **Tickets**: Represents tickets. Each ticket has a one-to-many relationship with customers.
+   - `migrate.ts`: Handles the migration logic for creating or updating database tables.
+
+---
+
+### **6.5 Update `package.json`**
+
+Add the following scripts to streamline the database generation and migration process:
+
+```json
+"scripts": {
+  "db:generate": "drizzle-kit generate",
+  "db:migrate": "tsx ./db/migrate.ts"
+}
+```
+
+---
+
+### **6.6 Generate and Migrate**
+
+Run the following commands to generate and apply migrations:
+
+```bash
+npm run db:generate  # Generates migration files.
+npm run db:migrate   # Applies migrations to the database.
+```
+
+---
