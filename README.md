@@ -54,6 +54,80 @@ When you don't know the exact segment names ahead of time and want to create rou
 - A Dynamic Segment can be created by wrapping a folder's name in square brackets: `[folderName]`. For example, `[id]` or `[slug]`.
 - Dynamic Segments are passed as the `params` prop to [`layout`](https://nextjs.org/docs/app/api-reference/file-conventions/layout), [`page`](https://nextjs.org/docs/app/api-reference/file-conventions/page), [`route`](https://nextjs.org/docs/app/building-your-application/routing/route-handlers), and [`generateMetadata`](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function) functions.
 
+### **1.2 File Conventions**
+
+#### **1.2.1 Page.js**
+
+The `page` file allows you to define UI that is **unique** to a route. You can create a page by default exporting a component from the file:
+
+```ts
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  return <h1>My Page</h1>
+}
+```
+
+[Props](https://nextjs.org/docs/app/api-reference/file-conventions/page#props)
+
+- [`params` (optional)](https://nextjs.org/docs/app/api-reference/file-conventions/page#params-optional):
+  A promise that resolves to an object containing the [dynamic route parameters](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes) from the root segment down to that page.
+  1.  **Example Route**: `app/shop/[category]/[item]/page.js`
+  2.  **URL**: `/shop/1/2`
+- [`searchParams` (optional)](https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional):
+  A promise that resolves to an object containing the [search parameters](https://developer.mozilla.org/docs/Learn/Common_questions/What_is_a_URL#parameters) of the current URL. For example: 1. **Example URL**: `/shop?a=1&b=2` 2. **Created At:** `app/\(rs\)/customers/form/page.tsx` & `app/\(rs\)/ctickets/form/page.tsx`
+
+### **1.2.2 Layout.js**
+
+#### **Definition**
+
+- A **root layout** is the top-most layout located in the root `app` directory.
+- It is primarily used to define the `<html>` and `<body>` tags, as well as globally shared UI components.
+
+#### **Key References**
+
+- **[Layout Documentation](https://nextjs.org/docs/app/api-reference/file-conventions/layout#reference)**
+- **[Props Documentation](https://nextjs.org/docs/app/api-reference/file-conventions/layout#props)**
+
+#### **Props Overview**
+
+1. **[`children` (required)](https://nextjs.org/docs/app/api-reference/file-conventions/layout#children-required)**
+
+   - Layout components must accept and use a `children` prop.
+   - During rendering, `children` will include the route segments wrapped by the layout.
+   - It primarily includes child components such as:
+     - A child [Layout](https://nextjs.org/docs/app/api-reference/file-conventions/page) (if it exists).
+     - A [Page](https://nextjs.org/docs/app/api-reference/file-conventions/page).
+     - Other special files like:
+       - [Loading](https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming).
+       - [Error](https://nextjs.org/docs/app/building-your-application/routing/error-handling).
+
+2. **[`params` (optional)](https://nextjs.org/docs/app/api-reference/file-conventions/layout#params-optional)**
+
+   - A promise that resolves to an object containing the [dynamic route parameters](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes).
+   - These parameters are accessible from the root segment down to the specific layout.
+
+   **Example Usage**:
+
+   ```tsx
+   export default async function Layout({
+     params,
+   }: {
+     params: Promise<{ team: string }>;
+   }) {
+     const team = (await params).team;
+   }
+   ```
+
+#### **Notable Limitations**
+
+- Layout components **do not** receive the `searchParams` prop.
+- Layouts cannot access the `pathname` property.
+
 ---
 
 ## **2. Tailwind CSS**
@@ -232,8 +306,6 @@ db
      - **Tickets**: Represents tickets. Each ticket has a one-to-many relationship with customers.
    - `migrate.ts`: Handles the migration logic for creating or updating database tables.
 
----
-
 ### **6.5 Update `package.json`**
 
 Add the following scripts to streamline the database generation and migration process:
@@ -245,8 +317,6 @@ Add the following scripts to streamline the database generation and migration pr
 }
 ```
 
----
-
 ### **6.6 Generate and Migrate**
 
 Run the following commands to generate and apply migrations:
@@ -256,4 +326,10 @@ npm run db:generate  # Generates migration files.
 npm run db:migrate   # Applies migrations to the database.
 ```
 
----
+#### **6.7 Creating Queries**
+
+```
+lib/queries
+├── getCustomer.ts       # fetch single customer based on id
+└── getTicket.ts         # fetch single tickets based on id
+```
