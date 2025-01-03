@@ -10,6 +10,8 @@
 - **Kinde** – Authentication and authorization service
 - **Neon** - Ship faster with Postgres
 - **Drizzle** - ORM for your database
+- **Zod** -TypeScript-first schema validation with static type inference
+- **React-Hook-Form** - Simple form validation with React Hook Form
 
 ---
 
@@ -166,6 +168,11 @@ Shadcn is used for reusable UI components. Below are the components implemented 
 
    - Created in the same directory as Button.
    - Used in `components/ModeToggle.tsx`.
+
+4. **Form**:
+
+   - created in `component/ui/form.tsx` and also created **label** component in `component/ui/label.tsx`
+   -
 
 ### **3.2 Adding Components**
 
@@ -332,4 +339,83 @@ npm run db:migrate   # Applies migrations to the database.
 lib/queries
 ├── getCustomer.ts       # fetch single customer based on id
 └── getTicket.ts         # fetch single tickets based on id
+```
+
+---
+
+### **7. React-Hook-Form, Drizzle-Zod**
+
+#### **7.1 Dependencies Installation**
+
+Install the required dependencies using the following command:
+
+```bash
+npm i zod drizzle-zod react-hook-form @hookform/resolvers
+```
+
+---
+
+#### **7.2 Schema Creation**
+
+Create the customer and tickets types for type validation under the `lib/zod-schemas` directory:
+
+```
+lib/zod-schemas
+├── customer.ts
+└── ticket.ts
+```
+
+---
+
+#### **7.3 Usage of `lib/zod-schemas`**
+
+- The schemas are used in:
+  - `app/(rs)/customers/form/CustomerForm.tsx` component, which is called by `page.tsx`.
+  - `app/(rs)/tickets/form/CustomerForm.tsx` component, which is also called by `page.tsx`.
+
+---
+
+#### **7.4 React-Hook-Form Overview**
+
+- [React-Hook-Form Documentation](https://react-hook-form.com/get-started)
+- **Key Features**:
+  - Simplifies form validation in React.
+  - Avoids the need for multiple state variables for inputs, `onSubmit`, `onClick`, etc.
+
+**Basic Usage Example**:
+
+```tsx
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type Inputs = {
+  example: string;
+  exampleRequired: string;
+};
+
+export default function App() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+  console.log(watch("example")); // Watch input value by passing the name of it
+
+  return (
+    /* "handleSubmit" validates inputs before invoking "onSubmit" */
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* Register input into the hook by invoking "register" */}
+      <input defaultValue="test" {...register("example")} />
+
+      {/* Include validation with required or other HTML validation rules */}
+      <input {...register("exampleRequired", { required: true })} />
+      {/* Display errors if field validation fails */}
+      {errors.exampleRequired && <span>This field is required</span>}
+
+      <input type="submit" />
+    </form>
+  );
+}
 ```
