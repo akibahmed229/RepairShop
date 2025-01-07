@@ -149,38 +149,99 @@ Tailwind is customized in the `tailwind.config.ts` file. Below are some themes a
 
 ## **3. Shadcn/UI**
 
-Shadcn is used for reusable UI components. Below are the components implemented in the project:
+Shadcn is used for building reusable UI components in the project. Below are the details of the components implemented and their usage:
 
 ### **3.1 Components Used**
 
-1. **Dark Mode Toggle**:
+#### **3.1.1 Dark Mode Toggle**
 
-   - Created in `components/theme-provider.tsx`.
-   - Integrated with `ThemeProvider` in the root layout (`app/layout.tsx`).
-   - Dark mode toggle added in `components/ModeToggle.jsx` and used in `components/Header.tsx`.
+- **Location**:
+  - Created in `components/theme-provider.tsx`.
+  - Integrated with the `ThemeProvider` in the root layout (`app/layout.tsx`).
+  - The toggle itself is added in `components/ModeToggle.tsx` and used in `components/Header.tsx`.
 
-2. **Button**:
+#### **3.1.2 Button**
 
-   - Created in `components/ui/button.tsx`.
-   - Used in `components/Header.tsx`, `app/note-found.tsx`.
+- **Location**:  
+   Created in `components/ui/button.tsx`.
+- **Usage**:  
+   Used in:
+  - `components/Header.tsx`
+  - `app/note-found.tsx`
 
-3. **Dropdown Menu**:
+#### **3.1.3 Dropdown Menu**
 
-   - Created in the same directory as Button.
-   - Used in `components/ModeToggle.tsx`.
+- **Location**:  
+   Created in the same directory as `Button`.
+- **Usage**:  
+   Used in `components/ModeToggle.tsx`.
 
-4. **Form**:
+#### **3.1.4 Form**
 
-   - created in `component/ui/form.tsx` and also created **label** component in `component/ui/label.tsx`
-   -
+- **Location**:
+  - Created in `component/ui/form.tsx`.
+  - The **label** component is created in `component/ui/label.tsx`.
+- **Purpose**:  
+   The `<Form />` component is a wrapper around the `react-hook-form` library, designed to simplify the management of form components.
+- **Anatomy**:
+  ```tsx
+  <Form>
+    <FormField
+      control={...}
+      name="..."
+      render={() => (
+        <FormItem>
+          <FormLabel />
+          <FormControl>
+            { /* Your form field */ }
+          </FormControl>
+          <FormDescription />
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  </Form>
+  ```
+- **References**:  
+   Examples of integrating the `<Form />` component with other UI components:
+  - [Checkbox](https://ui.shadcn.com/docs/components/checkbox#form)
+  - [Input](https://ui.shadcn.com/docs/components/input#form)
+  - [Select](https://ui.shadcn.com/docs/components/select#form)
+  - [Textarea](https://ui.shadcn.com/docs/components/textarea#form)
 
 ### **3.2 Adding Components**
 
-Install a Shadcn component using the following command:
+To install a Shadcn component, use the following command:
 
 ```bash
 npx shadcn@latest add component
 ```
+
+### **3.3 Custom Input Components**
+
+#### **3.3.1 Location**
+
+Custom input components are created in the `components/inputs` directory:
+
+```
+components/inputs
+├── CheckBoxWithLabel.tsx
+├── InputWithLabel.tsx
+├── SelectWithLabel.tsx
+└── TextAreaWithLabel.tsx
+```
+
+#### **3.3.2 Usage**
+
+These components are used in:
+
+- `app/(rs)/customers/form/CustomerForm.tsx`
+- `app/(rs)/tickets/form/TicketForm.tsx`
+
+### **3.4 Input, Select, Textarea, Checkbox**
+
+- **Location**:  
+   Core input components are created in the `component/ui/` directory.
 
 ---
 
@@ -353,8 +414,6 @@ Install the required dependencies using the following command:
 npm i zod drizzle-zod react-hook-form @hookform/resolvers
 ```
 
----
-
 #### **7.2 Schema Creation**
 
 Create the customer and tickets types for type validation under the `lib/zod-schemas` directory:
@@ -365,15 +424,11 @@ lib/zod-schemas
 └── ticket.ts
 ```
 
----
-
 #### **7.3 Usage of `lib/zod-schemas`**
 
 - The schemas are used in:
   - `app/(rs)/customers/form/CustomerForm.tsx` component, which is called by `page.tsx`.
   - `app/(rs)/tickets/form/CustomerForm.tsx` component, which is also called by `page.tsx`.
-
----
 
 #### **7.4 React-Hook-Form Overview**
 
