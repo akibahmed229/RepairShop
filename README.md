@@ -130,6 +130,61 @@ export default function Page({
 - Layout components **do not** receive the `searchParams` prop.
 - Layouts cannot access the `pathname` property.
 
+### **1.3 Optimization**
+
+Next.js includes several built-in optimizations that enhance speed and [Core Web Vitals](https://web.dev/vitals/). Below are key techniques implemented in this project:
+
+---
+
+#### **1.3.1 Metadata Optimization**
+
+Managing metadata effectively is essential for improving SEO and the overall user experience in your application. Next.js supports both static and dynamic metadata:
+
+---
+
+##### **Static Metadata**
+
+Static metadata can be defined by exporting a [`Metadata` object](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-object) from a `layout.js` or static `page.js` file.
+
+- **Example**:
+
+  ```tsx
+  import type { Metadata } from "next";
+
+  export const metadata: Metadata = {
+    title: "...",
+    description: "...",
+  };
+
+  export default function Page() {}
+  ```
+
+---
+
+##### **Dynamic Metadata**
+
+Dynamic metadata can be generated using the `generateMetadata` function. This allows metadata to be fetched or calculated dynamically based on application context.
+
+- **Example**:
+
+  ```tsx
+  export async function generateMetadata({
+    searchParams,
+  }: {
+    searchParams: Promise<{ [key: string]: string | undefined }>;
+  }) {
+    const { customerId } = await searchParams;
+
+    if (!customerId) {
+      return { title: "New Customer" };
+    }
+    return { title: `Edit Customer #${customerId}` };
+  }
+  ```
+
+- **Usage**:
+  - Used in: `app/(rs)/customers/form/page.tsx` & `app/(rs)/tickets/form/page.tsx`
+
 ---
 
 ## **2. Tailwind CSS**
@@ -315,6 +370,52 @@ Logout functionality was added to `components/Header.tsx`.
 ### **5.6 Middleware for Route Protection**
 
 To protect routes, create a `middleware.ts` file at the root of the project. This middleware ensures that only authenticated users can access certain pages.
+
+### **5.7 Kinde Management API JS**
+
+#### **5.7.1 Installation**
+
+Install the required dependencies using the following command:
+
+```bash
+npm i @kinde-oss/kinde-auth-nextjs @kinde/management-api-js
+```
+
+---
+
+#### **5.7.2 Machine-to-Machine (M2M) Application Setup**
+
+1. Go to the Kinde website and create a **Machine to Machine (M2M)** application.
+2. Set up the following environment variables in your project:
+
+   ```env
+   KINDE_DOMAIN=https://your_kinde_site_name.kinde.com
+   KINDE_MANAGEMENT_CLIENT_ID=your_id
+   KINDE_MANAGEMENT_CLIENT_SECRET=your_secret
+   ```
+
+---
+
+#### **5.7.3 Usage**
+
+##### **Client-Side Helper**
+
+To access the authorized user’s Kinde Auth data from a client component, use the `useKindeBrowser` helper.
+
+- **Documentation**: Refer to the [Kinde Client Helper](https://docs.kinde.com/developer-tools/sdks/backend/nextjs-sdk/#kinde-auth-data---client).
+- **Example Usage**:
+  - Used in: `app/(rs)/customers/form/CustomerForm.tsx`
+
+---
+
+##### **Server-Side Helper**
+
+To access the authorized user’s Kinde Auth data from a server component, use the `getKindeServerSession` helper.
+
+- **Documentation**: Refer to the [Kinde Server Helper](https://docs.kinde.com/developer-tools/sdks/backend/nextjs-sdk/#kinde-auth-data---client).
+- **Example Usage**:
+  - Used in: `app/(rs)/tickets/form/page.tsx`
+  - Also utilizes the `@kinde/management-api-js` library for additional functionality.
 
 ---
 
